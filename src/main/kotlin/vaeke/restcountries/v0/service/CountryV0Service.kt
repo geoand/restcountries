@@ -34,12 +34,12 @@ class CountryV0Service {
     fun getByName(name: String): List<Country> = countries.filter { isContainedInCountryName(it, name) }
 
     private fun isContainedInCountryName(country: Country, name: String) : Boolean{
-        return arrayListOf(country.name, country.altSpellings).map { normalize(it) }.contains(name)
+        return arrayListOf(country.name, country.altSpellings).map { it.normalize() }.contains(name)
     }
 
     fun getByCallingcode(callingCode: String): List<Country> = countries.filter { it.callingCode.equals(callingCode) }
 
-    fun getByCapital(capital: String) : List<Country> = countries.filter { normalize(it.capital).equals(normalize(capital), true) }
+    fun getByCapital(capital: String) : List<Country> = countries.filter { it.capital.normalize().equals(capital.normalize(), true) }
 
     fun getByRegion(region: String): List<Country> = countries.filter { it.region.equals(region, true) }
 
@@ -49,8 +49,8 @@ class CountryV0Service {
 
     private fun countryHasLanguage(country : Country, language: String) : Boolean = country.languages.firstOrNull{it.equals(language, true)} != null
 
-    private fun normalize(string: String): String {
-        return Normalizer.normalize(string, Normalizer.Form.NFD).replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
+    private fun String.normalize(): String {
+        return Normalizer.normalize(this, Normalizer.Form.NFD).replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
     }
 
     private fun loadCountries(): List<Country> {
